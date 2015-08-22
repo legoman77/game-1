@@ -5,7 +5,7 @@ var game = new Phaser.Game(800,600,Phaser.AUTO,'game',
 
 var ship;
 var cursors;
-var missile;
+var bullet;
 var background;
 var enemy;
 
@@ -13,75 +13,75 @@ function preload() {
   game.stage.backgroundColor = '#bbbbbb';
   game.load.image('background', 'space.gif');
   game.load.image('ship', 'ship.gif');
-  game.load.image('missile', 'missile.gif');
+  game.load.image('bullet', 'bullet.gif');
   game.load.image('enemy', 'enemy.gif');
 }
 
 function create() {
   background = game.add.tileSprite(0,0,800,600,'background');
   background.autoScroll(-100,0);
-  missile = game.add.sprite(60,350,'missile');
+  bullet = game.add.sprite(60,350,'bullet');
   ship = game.add.sprite(20,300,'ship');
   enemy = game.add.sprite(600,300,'enemy');
   game.physics.enable(ship, Phaser.Physics.ARCADE);
-  game.physics.enable(missile, Phaser.Physics.ARCADE);
+  game.physics.enable(bullet, Phaser.Physics.ARCADE);
   game.physics.enable(enemy, Phaser.Physics.ARCADE);
   cursors = game.input.keyboard.createCursorKeys();
 }
 
 function update() {
-  game.physics.arcade.overlap(missile, enemy, collisionHandler, null, this);
+  game.physics.arcade.overlap(bullet, enemy, collisionHandler, null, this);
 
 
   ship.body.velocity.x = 0;
   ship.body.velocity.y = 0;
 
 
-  if (! missile.shooting) {
-    missile.body.velocity.x = 0;
-    missile.body.velocity.y = 0;
-    missile.x = ship.x;
-    missile.y = ship.y + 7;
-    missile.renderable = true;
+  if (! bullet.shooting) {
+    bullet.body.velocity.x = 0;
+    bullet.body.velocity.y = 0;
+    bullet.x = ship.x;
+    bullet.y = ship.y + 7;
+    bullet.renderable = true;
   }
   
   //move up
   if (cursors.up.isDown) {
     ship.body.velocity.y = -300;
-    if (! missile.shooting) {
-      missile.body.velocity.y = -300;
+    if (! bullet.shooting) {
+      bullet.body.velocity.y = -300;
     }
   }
 
   //move down
   else if (cursors.down.isDown) {
     ship.body.velocity.y = 300;
-    if (! missile.shooting) {
-      missile.body.velocity.y = 300;
+    if (! bullet.shooting) {
+      bullet.body.velocity.y = 300;
     }
   }
   
   //reset if off screen
-  if (missile.x > 800) {
-    missile.shooting = false;
-    missile.renderable = false;
-    missile.body.velocity.x = 0;
-    missile.body.velocity.y = 0;
-    missile.x = ship.x;
-    missile.y = ship.y;
+  if (bullet.x > 800) {
+    bullet.shooting = false;
+    bullet.renderable = false;
+    bullet.body.velocity.x = 0;
+    bullet.body.velocity.y = 0;
+    bullet.x = ship.x;
+    bullet.y = ship.y;
   }
 
   //shoot
   if (game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
-    missile.body.velocity.x = 1000;
-    missile.shooting = true;
+    bullet.body.velocity.x = 1000;
+    bullet.shooting = true;
   }
 }
 
 function render() {
 }
 
-function collisionHandler(missile, enemy) {
+function collisionHandler(bullet, enemy) {
   missileReset();
   repositionEnemy();
 }
@@ -92,7 +92,7 @@ function repositionEnemy() {
 }
 
 function missileReset() {
-  missile.shooting = false;
-  missile.body.velocity.x = 0;
-  missile.body.velocity.y = 0;
+  bullet.shooting = false;
+  bullet.body.velocity.x = 0;
+  bullet.body.velocity.y = 0;
 }
